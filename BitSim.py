@@ -118,7 +118,7 @@ if __name__ == '__main__':
 		s = input("Do you want to load a saved sim file? (y/n) ")
 		if (s == 'y'):
 			print ("Please pick a file:")
-			files = glob.glob("/Users/adamwalsh/Developer/Python/*.BTCsim");
+			files = glob.glob(os.getcwd() + "/*.BTCsim");
 			for i in range(len(files)):
 				print (str(i) + ") " + str(files[i]))
 			index = int(input ('--> '))
