@@ -109,6 +109,7 @@ def printCurrentInfo():
 	print("\nAccount Information Overview")
 	print("USD Balance: " + str(round(money, 8)))
 	print("BTC Balance: " + str(round(BTCs, 8)))
+	print("Current account net worth: " + str(round((money + BTCs * getCurrentBTCPrice()), 2)))
 	print("\n" + "Current BTC price: " + str(getCurrentBTCPrice()));
 
 if __name__ == '__main__':
