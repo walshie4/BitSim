@@ -26,10 +26,10 @@ def runSim(outFile): #run simulation
 		else: #file contains data to be processed
 			processFile(outFile)
 		outFileName = outFile
-	except FileNotFoundError:
-		outFileName = outFile + ".BTCsim"
+	except FileNotFoundError: #if file does not exist
+		outFileName = outFile + ".BTCsim" #create the name for it
 	print("Simulation being saved to " + outFileName)
-	out = open(outFileName, 'a')
+	out = open(outFileName, 'a') #open file for appending
 	print("Simulation active.  Commands include b (buy), s (sell), i (info), h (help), and q (quit)")
 	while True: #run main loop
 		command = input('--> ')
@@ -76,7 +76,7 @@ def processLine(line): #line format: (b/s) (amount) (price) (timestamp in sec.)
 		amount = float(words[1])
 		price = float(words[2])
 		time = words[3]
-		print("Simulating sale of " + str(round(amount,8)) + " BTCs @ price: " + str(round(price,8)) + "\ttimestamp: " + time)
+		print("Simulating sale of " + str(round(amount,8)) + " BTCs @ price: $" + str(round(price,8)) + "\ttimestamp: " + time)
 		sell(amount, price)
 	else:
 		print("Invalid input file format - " + line)
@@ -85,6 +85,7 @@ def buy(amount, price):
 	global money;
 	global BTCs;
 	if(amount*price < money):
+		print(str(amount) + " BTCs purchased for $" + str(round(amount * price, 2)))
 		money -= amount * price
 		BTCs += amount
 		return True
@@ -99,6 +100,7 @@ def sell(amount, price):
 		print("Sell FAILED - insufficent BTCs!")
 		return False
 	else:
+		print(str(amount) + " BTCs sold for $" + str(round(amount * price, 2)))
 		money += amount * price
 		BTCs -= amount
 		return True
