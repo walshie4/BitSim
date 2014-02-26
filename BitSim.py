@@ -46,13 +46,13 @@ class BitSim:
                 amount = input("Please input the amount of BTCs you would like to buy: ")
                 price = self.getCurrentBTCPrice()
                 if(self.buy(float(amount), price, None)): #if successful write to file
-                    out.write("b " + str(round(float(amount),8)) + " " + str(round(price,8)) + " " + self.getCurrentTime() + "\n")
+                    out.write("b " + str(round(float(amount),8)) + " " + str(round(price,8)) + " " + str(self.getCurrentTime()) + "\n")
                     print("Success!")
             elif(command == 's'):
                 amount = input("Please input the amount of BTCs you would like to sell: ")
                 price = self.getCurrentBTCPrice()
                 if(self.sell(float(amount), price, None)): #write to file if successful
-                    out.write("s " + str(round(float(amount),8)) + " " + str(round(price,8)) + " " + self.getCurrentTime() + "\n")
+                    out.write("s " + str(round(float(amount),8)) + " " + str(round(price,8)) + " " + str(self.getCurrentTime()) + "\n")
                     print("Success!")
             elif(command == 'i'):
                 self.printCurrentInfo()
