@@ -5,6 +5,7 @@ import json, urllib, requests, glob, sys, os, time, math
 class BitSim:
     baseURL = "https://www.bitstamp.net/api/"
     money = 1000 #number of $'s in account
+    feesum = 0 #total money lost to fees
     BTCs = 0 #number of BTC's in account
     json #variable used to store most recent json data in
 
@@ -97,6 +98,7 @@ class BitSim:
         if(round(amount*price, 2) < self.money - fee):
             print(str(amount) + " BTCs purchased for $" + str(round(amount * price, 2)) + " with a fee of: " + str(fee))
             self.money -= fee
+            self.feesum += fee
             self.money -= amount * price
             self.BTCs += amount
             return True
@@ -114,6 +116,7 @@ class BitSim:
             fee = self.getFee(amount * price)
             print(str(amount) + " BTCs sold for $" + str(round(amount * price, 2)) + " with a fee of: " + str(fee))
             self.money -= fee
+            self.feesum += fee
             self.money += amount * price
             self.BTCs -= amount
             return True
@@ -123,6 +126,7 @@ class BitSim:
         print("USD Balance: " + str(round(self.money, 2)))
         print("BTC Balance: " + str(round(self.BTCs, 8)))
         print("Current account net worth: " + str(round((self.money + self.BTCs * self.getCurrentBTCPrice()), 2)))
+        print("Total lost to fees: $" + str(round(self.feesum, 2)))
         print("\n" + "Current BTC price: " + str(self.getCurrentBTCPrice()));
 
     def getFee(self, amount): #amount is amount to spend in USD
