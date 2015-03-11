@@ -5,6 +5,11 @@ Development of this project will continue once I have more free time to spare.
 
 A simple Bitcoin trading simulator
 
+<b>Requirements</b>
+
+* Requests library
+* Python3
+
 <b>Functions available:</b>
 
 * getCurrentBTCPrice() - Returns the current BTC price
@@ -24,4 +29,4 @@ A simple Bitcoin trading simulator
 
 * Add EUR currency support
 
-Files ending in *.BTCsim are used for saving (logging), and reading in transactions to get the account up to date. File format can be seen in the Test.BTCsim file. Make sure to run using python3!
+les ending in *.BTCsim are used for saving (logging), and reading in transactions to get the account up to date. File format can be seen in the Test.BTCsim file. Make sure to run using python3!

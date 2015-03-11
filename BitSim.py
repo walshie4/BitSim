@@ -1,10 +1,11 @@
 #Written by: Adam Walsh
 #Dec. 23, 2013
-import json, urllib, requests, glob, sys, os, time
+import json, urllib, requests, glob, sys, os, time, math
 
 class BitSim:
     baseURL = "https://www.bitstamp.net/api/"
     money = 1000 #number of $'s in account
+    feesum = 0 #total money lost to fees
     BTCs = 0 #number of BTC's in account
     json #variable used to store most recent json data in
 
@@ -35,7 +36,7 @@ class BitSim:
             else: #file contains data to be processed
                 self.processFile(outFile)
             outFileName = outFile
-        except FileNotFoundError: #if file does not exist
+        except OSError: #if file does not exist
             outFileName = outFile + ".BTCsim" #create the name for it
         print("Simulation being saved to " + outFileName)
         out = open(outFileName, 'a') #open file for appending
@@ -45,14 +46,14 @@ class BitSim:
             if(command == 'b'):
                 amount = input("Please input the amount of BTCs you would like to buy: ")
                 price = self.getCurrentBTCPrice()
-                if(self.buy(float(amount), price)): #if successful write to file
-                    out.write("b " + str(round(float(amount),8)) + " " + str(round(price,8)) + " " + self.getCurrentTime() + "\n")
+                if(self.buy(float(amount), price, None)): #if successful write to file
+                    out.write("b " + str(round(float(amount),8)) + " " + str(round(price,8)) + " " + str(self.getCurrentTime()) + "\n")
                     print("Success!")
             elif(command == 's'):
                 amount = input("Please input the amount of BTCs you would like to sell: ")
                 price = self.getCurrentBTCPrice()
-                if(self.sell(float(amount), price)): #write to file if successful
-                    out.write("s " + str(round(float(amount),8)) + " " + str(round(price,8)) + " " + self.getCurrentTime() + "\n")
+                if(self.sell(float(amount), price, None)): #write to file if successful
+                    out.write("s " + str(round(float(amount),8)) + " " + str(round(price,8)) + " " + str(self.getCurrentTime()) + "\n")
                     print("Success!")
             elif(command == 'i'):
                 self.printCurrentInfo()
@@ -97,6 +98,7 @@ class BitSim:
         if(round(amount*price, 2) < self.money - fee):
             print(str(amount) + " BTCs purchased for $" + str(round(amount * price, 2)) + " with a fee of: " + str(fee))
             self.money -= fee
+            self.feesum += fee
             self.money -= amount * price
             self.BTCs += amount
             return True
@@ -114,6 +116,7 @@ class BitSim:
             fee = self.getFee(amount * price)
             print(str(amount) + " BTCs sold for $" + str(round(amount * price, 2)) + " with a fee of: " + str(fee))
             self.money -= fee
+            self.feesum += fee
             self.money += amount * price
             self.BTCs -= amount
             return True
@@ -123,19 +126,20 @@ class BitSim:
         print("USD Balance: " + str(round(self.money, 2)))
         print("BTC Balance: " + str(round(self.BTCs, 8)))
         print("Current account net worth: " + str(round((self.money + self.BTCs * self.getCurrentBTCPrice()), 2)))
+        print("Total lost to fees: $" + str(round(self.feesum, 2)))
         print("\n" + "Current BTC price: " + str(self.getCurrentBTCPrice()));
 
     def getFee(self, amount): #amount is amount to spend in USD
-        return round(math.ciel(amount * .5) / 100, 2)
+        return round(math.ceil(amount * .5) / 100, 2)
 
 if __name__ == '__main__':
     bs = BitSim()
     print ("1) Run simulator")
     print ("2) Get current BTC price")
     print ("Other functionality not yet implemented") #graphing? other stuff?
-    resp = input('--> ')
+    resp = str(input('--> '))
     if (resp == '1'):
-        s = input("Do you want to load a saved sim file? (y/n) ")
+        s = str(input('Do you want to load a saved sim file? (y/n) '))
         if (s == 'y'):
             print ("Please pick a file:")
             files = glob.glob(os.getcwd() + "/*.BTCsim");
@@ -154,7 +158,7 @@ if __name__ == '__main__':
     elif (resp == '2'):
         print("Current BTC price: " + str(bs.getCurrentBTCPrice()))
     else:
-        print ("Invalid input")
+        print ("Invalid input - " + str(resp))
         print ("Quitting...")
         sys.exit(0)
 
