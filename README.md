@@ -1,6 +1,8 @@
 BitSim
 ======
 
+Development of this project will continue once I have more free time to spare.
+
 A simple Bitcoin trading simulator
 
 <b>Functions available:</b>
