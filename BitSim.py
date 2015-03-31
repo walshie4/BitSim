@@ -17,20 +17,20 @@ class BitSim:
     def __init__(self, money):
         self.money = money
 
-    def getCurrentBTCPrices(self):
-        updateJSON()
-        return round(float(self.json['last']), 8)
-
     def updateJSON(self):
         URL = self.baseURL + "ticker/"
         self.json = requests.get(URL).json()
 
+    def getCurrentBTCPrice(self):
+        self.updateJSON()
+        return round(float(self.json['last']), 8)
+
     def getLow(self):
-        updateJSON()
+        self.updateJSON()
         return round(float(self.json['low']), 8)
 
     def getHigh(self):
-        updateJSON()
+        self.updateJSON()
         return round(float(self.json['high']), 8)
 
     def getCurrentTime(self):
@@ -52,14 +52,12 @@ class BitSim:
             command = input('--> ')
             if(command == 'b'):
                 amount = input("Please input the amount of BTCs you would like to buy: ")
-                price = self.getCurrentBTCPrice()
-                if(self.buy(float(amount), price, None)): #if successful write to file
+                if(self.buy(float(amount))): #if successful write to file
                     out.write("b " + str(round(float(amount),8)) + " " + str(round(price,8)) + " " + str(self.getCurrentTime()) + "\n")
                     print("Success!")
             elif(command == 's'):
                 amount = input("Please input the amount of BTCs you would like to sell: ")
-                price = self.getCurrentBTCPrice()
-                if(self.sell(float(amount), price, None)): #write to file if successful
+                if(self.sell(float(amount))): #write to file if successful
                     out.write("s " + str(round(float(amount),8)) + " " + str(round(price,8)) + " " + str(self.getCurrentTime()) + "\n")
                     print("Success!")
             elif(command == 'i'):
@@ -87,18 +85,19 @@ class BitSim:
             price = float(words[2])
             time = words[3]
             print("Simulating buy of " + str(round(amount,8)) + " BTCs @ price: $" + str(round(price,8)) + "\ttimestamp: " + time)
-            self.buy(amount, price)
+            self.buy(amount)
         elif(line[0] == 's'):
             words = line.split()
             amount = float(words[1])
             price = float(words[2])
             time = words[3]
             print("Simulating sale of " + str(round(amount,8)) + " BTCs @ price: $" + str(round(price,8)) + "\ttimestamp: " + time)
-            self.sell(amount, price)
+            self.sell(amount)
         else:
             print("Invalid input file format - " + line)
 
-    def buy(self, amount, price, trader):
+    def buy(self, amount):
+        price = self.getCurrentBTCPrice()
         fee = self.getFee(amount * price)
         if(round(amount*price, 2) < self.money - fee):
             print(str(amount) + " BTCs purchased for $" + str(round(amount * price, 2)) + " with a fee of: " + str(fee))
@@ -111,7 +110,8 @@ class BitSim:
             print("Buy FAILED - insufficent funds!")
             return False
 
-    def sell(self, amount, price, trader):
+    def sell(self, amount):
+        price = self.getCurrentBTCPrice()
         if(amount > round(self.BTCs, 8)):
             print("Sell FAILED - insufficent BTCs! amount passed: " + str(amount) + " BTCs: " + str(self.BTCs))
             return False
