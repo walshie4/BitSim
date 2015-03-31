@@ -6,30 +6,33 @@ class BitSim:
     baseURL = "https://www.bitstamp.net/api/"
     money = 1000 #number of $'s in account
     feesum = 0 #total money lost to fees
+    feeValue = .0025 #or .25%
     BTCs = 0 #number of BTC's in account
     json #variable used to store most recent json data in
 
 #should add means of viewing timeline of transactions in some way
 #also possibly add last line of file to hold newest values to accelerate loading speeds
 
-    def getCurrentBTCPrice(self):
-#        print("making request")
-        URL = self.baseURL + "ticker/"
-        self.json = requests.get(URL).json()
+    def getCurrentBTCPrices(self):
+        updateJSON()
         return round(float(self.json['last']), 8)
 
-    def getLow(self): #current price must be pulled BEFORE low OR high are called
-#        print("making request - low")
+    def updateJSON(self):
+        URL = self.baseURL + "ticker/"
+        self.json = requests.get(URL).json()
+
+    def getLow(self):
+        updateJSON()
         return round(float(self.json['low']), 8)
 
     def getHigh(self):
-#        print("making request - high")
+        updateJSON()
         return round(float(self.json['high']), 8)
 
     def getCurrentTime(self):
         return time.time()
 
-    def runSim(self, outFile): #run simulation
+    def runSim(self, outFile): #run simulation interactively
         try:
             if(os.stat(outFile).st_size == 0): #file is empty (no input to process)
                 pass
@@ -130,7 +133,7 @@ class BitSim:
         print("\n" + "Current BTC price: " + str(self.getCurrentBTCPrice()));
 
     def getFee(self, amount): #amount is amount to spend in USD
-        return round(math.ceil(amount * .5) / 100, 2)
+        return round(math.ceil(amount * self.feeValue) / 100, 2)
 
 if __name__ == '__main__':
     bs = BitSim()
@@ -161,4 +164,3 @@ if __name__ == '__main__':
         print ("Invalid input - " + str(resp))
         print ("Quitting...")
         sys.exit(0)
-
