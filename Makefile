@@ -1,5 +1,5 @@
 run:
-	python BitSim.py
+	python3 BitSim.py
 clean:
 	rm -rf *.pyc
 pull:
