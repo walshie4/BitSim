@@ -12,6 +12,7 @@ class BitSim:
 
 #should add means of viewing timeline of transactions in some way
 #also possibly add last line of file to hold newest values to accelerate loading speeds
+#lots of this is gross and needs to be refactored
 
     def getCurrentBTCPrices(self):
         updateJSON()
@@ -95,8 +96,6 @@ class BitSim:
             print("Invalid input file format - " + line)
 
     def buy(self, amount, price, trader):
-    #   global money;
-#       global BTCs;
         fee = self.getFee(amount * price)
         if(round(amount*price, 2) < self.money - fee):
             print(str(amount) + " BTCs purchased for $" + str(round(amount * price, 2)) + " with a fee of: " + str(fee))
@@ -110,8 +109,6 @@ class BitSim:
             return False
 
     def sell(self, amount, price, trader):
-#   global money;
-#   global BTCs;
         if(amount > round(self.BTCs, 8)):
             print("Sell FAILED - insufficent BTCs! amount passed: " + str(amount) + " BTCs: " + str(self.BTCs))
             return False
