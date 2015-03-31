@@ -136,7 +136,6 @@ class BitSim:
         return round(math.ceil(amount * self.feeValue) / 100, 2)
 
 if __name__ == '__main__':
-    bs = BitSim(1000)
     print ("1) Run simulator")
     print ("2) Get current BTC price")
     print ("Other functionality not yet implemented") #graphing? other stuff?
@@ -154,11 +153,15 @@ if __name__ == '__main__':
                 print ("Quitting...")
                 sys.exit(0)
             simFile = files[index]
+            bs = BitSim(1000)
             bs.runSim(simFile)
         else:
             outFile = input("Please name this simulation: (Warning: File names are not case-sensitive) ")
+            value = input("Please input the amount of USD you would like to start with: ")
+            bs = BitSim(value)
             bs.runSim(outFile)
     elif (resp == '2'):
+        bs = BitSim(0)
         print("Current BTC price: " + str(bs.getCurrentBTCPrice()))
     else:
         print ("Invalid input - " + str(resp))
