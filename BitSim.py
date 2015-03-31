@@ -4,7 +4,7 @@ import json, urllib, requests, glob, sys, os, time, math
 
 class BitSim:
     baseURL = "https://www.bitstamp.net/api/"
-    money = 1000 #number of $'s in account
+    money = 0 #number of $'s in account
     feesum = 0 #total money lost to fees
     feeValue = .0025 #or .25%
     BTCs = 0 #number of BTC's in account
@@ -13,6 +13,9 @@ class BitSim:
 #should add means of viewing timeline of transactions in some way
 #also possibly add last line of file to hold newest values to accelerate loading speeds
 #lots of this is gross and needs to be refactored
+
+    def __init__(self, money):
+        self.money = money
 
     def getCurrentBTCPrices(self):
         updateJSON()
@@ -133,7 +136,7 @@ class BitSim:
         return round(math.ceil(amount * self.feeValue) / 100, 2)
 
 if __name__ == '__main__':
-    bs = BitSim()
+    bs = BitSim(1000)
     print ("1) Run simulator")
     print ("2) Get current BTC price")
     print ("Other functionality not yet implemented") #graphing? other stuff?
